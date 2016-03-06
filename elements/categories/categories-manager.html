@@ -1,0 +1,231 @@
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+
+
+<dom-module is="categories-manager">
+
+<template>
+
+	<style is="custom-style">
+
+.hori
+{
+	@apply(--layout-horizontal);
+}
+
+.category-input{
+
+	padding-right: 15px;
+}
+
+</style>
+
+	<firebase-collection id="ref"
+                             location="https://popping-heat-2481.firebaseio.com/Categories/"
+                             data = "{{categories}}">
+    </firebase-collection>
+
+    <firebase-collection id="lang"
+                             location="https://popping-heat-2481.firebaseio.com/Languages/"
+                             data = "{{languages}}">
+    </firebase-collection>
+
+
+    <paper-button raised on-tap="openCreate">NEW CATEGORY</paper-button>
+	<paper-dialog id="dialogCreatePosition" entry-animation="scale-up-animation"
+	              exit-animation="fade-out-animation">
+		<form id="createPosition">
+		   	    	<h3>Insert new category</h3>
+		   	    	<div>
+
+						<template is="dom-repeat" items="[[languages]]" as="language">
+
+						<paper-input class="category-input" label="[[language.name]]" id="[[language.name]]" required auto-validate error-message="needs some text"></paper-input>
+
+		        		</template>
+
+
+		      			<paper-button on-click="sumbitData" style="align-self:flex-end">+</paper-button>
+		      		</div>
+		        </form>
+		<paper-button dialog-dismiss>Cancel</paper-button>
+	</paper-dialog>
+
+	<paper-dialog id="dialogEditDetail" entry-animation="scale-up-animation"
+	              exit-animation="fade-out-animation">
+		<div>edit detail form</div>
+	  <paper-input id="editDetailInput"></paper-input>
+	  <paper-input id="editDetailInputOld" hidden></paper-input>
+	  <paper-input id="editDetailInputOldKey" hidden></paper-input>
+	  <paper-input id="editDetailInputLanguage" hidden></paper-input>
+	  <paper-button dialog-dismiss>Cancel</paper-button>
+	  <paper-button on-tap="submitEditDetail">Accept</paper-button>
+	</paper-dialog>
+
+<!-- TODO: se non si riesce ad usare la chosec category, per aprire una modale con dettagli, cancellare -->
+
+
+        <h3>Category List</h3>
+
+
+       <template is="dom-repeat" items="[[categories]]" as="category">
+
+				<paper-dialog id="dialogPositionDetail">
+	        		
+        		</paper-dialog>
+
+        		<div>[[category.italiano]] 
+        			<paper-button on-click="openDetail" raised>Details</paper-button>
+        			<paper-button on-click="deleteData">X</paper-button>
+
+        			<template is="dom-repeat" items="[[languages]]" as="language">
+	        		<div class="hori" hidden="{{hiddenCategoryDetail}}">
+	        			<div>[[language.name]]: </div>
+	        			<div>{{getLanguage(category, language)}}</div>
+	        			<paper-icon-button icon="editor:mode-edit" on-tap="editDetail"></paper-icon-button>
+	        		</div>	
+        			</template>  
+
+        		</div>
+        		
+        </template> 
+
+</template>
+
+<script>
+
+	Polymer({
+
+		is: "categories-manager", 
+
+		properties: {
+
+			categories: {
+				type: Object
+			},
+			languages: {
+				type: Object
+			}, 
+
+			chosenCategory: {
+				type: Object,
+				value: {"italiano": "categoria"},
+				notify: true,
+				observer: '_chosenCategoryChanged'
+			},
+
+			hiddenCategoryDetail:{
+				type: Boolean,
+				value: true
+			}
+		}, 
+
+		_chosenCategoryChanged: function(newValue){
+			//console.log(this.chosenCategory);
+		},
+
+		openCreate: function(){
+
+			this.$.dialogCreatePosition.open();
+		},
+
+		openDetail: function(e){
+
+			this.hiddenCategoryDetail = !this.hiddenCategoryDetail;
+		},
+
+		editDetail: function(e){
+
+
+			var location = 'https://popping-heat-2481.firebaseio.com/Categories/' + e.model.category.__firebaseKey__ + '/' + e.model.language.name;
+
+			var ref = new Firebase(location);
+			var data = "";
+
+			ref.once("value", function(snapshot) {
+			   data = snapshot.val();
+			});
+
+
+			document.getElementById('editDetailInput').value = data;
+			document.getElementById('editDetailInputOld').value = data;
+			document.getElementById('editDetailInputLanguage').value = e.model.language.name;
+			document.getElementById('editDetailInputOldKey').value = e.model.category.__firebaseKey__;
+
+			this.$.dialogEditDetail.open();
+
+		},
+
+		submitEditDetail: function(){
+
+				var updateValue = document.getElementById("editDetailInput").value;
+				var originalValue = document.getElementById("editDetailInputOld").value;
+				var firebaseKey = document.getElementById("editDetailInputOldKey").value;
+				var language = document.getElementById('editDetailInputLanguage').value;
+				
+				var location = 'https://popping-heat-2481.firebaseio.com/Categories/' + firebaseKey;
+
+				var entry = {};
+
+				entry[language] = updateValue;
+
+				console.log(entry);
+
+				var ref = new Firebase(location);
+				ref.update(entry);
+				this.$.dialogEditDetail.toggle();
+		},
+
+		getLanguage: function(cat, lang){
+
+			var location = 'https://popping-heat-2481.firebaseio.com/Categories/' + cat.__firebaseKey__ + '/' + lang.name;
+
+			var data = "";
+			var myDataRef= new Firebase(location);
+
+			myDataRef.once("value", function(snapshot) {
+			   data = snapshot.val();
+			});
+
+			  return data;
+		},
+
+		getCategoryDetail: function(lang){
+
+			  return this.chosenCategory.italiano;
+		},
+
+		createId: function(name){
+
+			return name;
+
+		},
+
+
+		sumbitData: function(){
+			
+			var data = new Object;
+			var inputs = document.querySelectorAll('.category-input');
+			for (i = 0; i < inputs.length; i++) { 
+				data[inputs[i].getAttribute('id')] = inputs[i].value;
+				inputs[i].value = "";
+			}
+
+			this.$.dialogCreatePosition.toggle();
+			this.$.ref.add(data);
+
+		},
+
+		deleteData: function(e){
+
+			this.$.ref.removeByKey(e.model.category.__firebaseKey__);
+		}
+	});
+
+</script>
+
+</dom-module>

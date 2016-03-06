@@ -1,0 +1,120 @@
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<dom-module is="sentences-manager">
+
+<template>
+
+	<firebase-collection id="categoryRef"
+                         location="https://popping-heat-2481.firebaseio.com/Categories/"
+                         data = "{{categories}}">
+    </firebase-collection>
+
+    <firebase-collection id="sentencesRef"
+                         location="https://popping-heat-2481.firebaseio.com/Sentences/"
+                         data = "{{sentences}}">
+    </firebase-collection>
+
+    <firebase-collection id="languagesRef"
+                         location="https://popping-heat-2481.firebaseio.com/Languages/"
+                         data = "{{languages}}">
+    </firebase-collection>
+
+	<paper-dropdown-menu label="Categories">
+	 	 <paper-menu class="dropdown-content" id="categoriesMenu" selected="{{chosenCategory}}" attr-for-selected="italiano">
+	 	 		<paper-item italiano="tutte">tutte</paper-item>
+		 	 <template is="dom-repeat" items="{{categories}}" as="category">
+		   		 <paper-item italiano="[[category.italiano]]">[[category.italiano]]</paper-item>
+			</template>
+	  	</paper-menu>
+	</paper-dropdown-menu>
+
+	<template is="dom-repeat" items="{{languages}}" as="language">
+		<paper-input label="[[language.name]]" id="[[language.name]]" class="language-input"></paper-input>
+
+	</template>
+
+	<paper-button raised on-tap="addSentence">ADD SENTENCE</paper-button>
+
+	<div>SENTENCES LIST X CATEGORY SELECTED</div>
+
+	<template is="dom-repeat" items="{{sentences}}" as="sentence">
+		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
+			<paper-item >
+				<span>{{sentence.italiano}}<span>
+				<template is="dom-if" if="{{isAllSelected(chosenCategory)}}">
+					<span>({{sentence.category}})</span>
+				</template>
+			</paper-item>
+		</template>
+	</template>
+
+
+</template>
+
+
+<script>
+
+Polymer({
+
+	is: 'sentences-manager',
+
+	properties: {
+
+		categories: {
+
+			type: Object
+		}, 
+
+		sentences: {
+
+			type: Object
+		},
+
+		languages: {
+
+			type: Object
+		},
+
+		chosenCategory:{
+			notify: true
+		}
+	},
+
+	addSentence: function(){
+
+		var data = new Object;
+		var inputs = document.querySelectorAll('.language-input');
+
+
+		for (i = 0; i < inputs.length; i++) { 
+
+			data[inputs[i].getAttribute('id')] = inputs[i].value;
+
+		}
+
+		data.category = this.chosenCategory;
+
+		this.$.sentencesRef.add(data);
+	}, 
+
+	isCategorySelected: function(sentence, chosenCategory){
+
+		if(chosenCategory === undefined)
+			return false;
+		if(chosenCategory == "tutte")
+			return true;
+
+		return (sentence.category === chosenCategory);
+	}, 
+
+	isAllSelected: function(chosenCategory){
+		return chosenCategory =="tutte";
+	}
+
+});
+
+</script>
+
+
+</dom-module>
