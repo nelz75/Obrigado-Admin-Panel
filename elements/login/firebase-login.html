@@ -12,6 +12,11 @@
 					on-error="loginError">
 		</firebase-auth>
 
+		<firebase-collection id="usersRef"
+                             location="https://popping-heat-2481.firebaseio.com/Users/"
+                             data = "{{users}}">
+    </firebase-collection>
+
 		<paper-button on-tap="userLogin">USER LOGIN</paper-button>
 	
 		<h3>Login status:</h3>
@@ -19,6 +24,8 @@
 
         <h3>User ID:</h3>
    	    <pre>{{user.uid}}</pre>
+   	    <pre>{{authData.google.displayName}}</pre>
+   	    <img src="{{authData.google.profileImageURL}}"></img>
 
    	    <paper-input label="username" id="username"></paper-input>
 
@@ -27,7 +34,10 @@
 
 		<paper-button on-tap="login" raised>ADMIN LOGIN</paper-button>
 		<paper-button on-tap="userLogin" raised>USER LOGIN</paper-button>
+		<paper-button on-tap="userLoginProva" raised>USER LOGIN PROVA</paper-button>
 		<paper-button on-tap="logout" raised>LOGOUT</paper-button>
+
+
 
 	</template>
 
@@ -44,6 +54,12 @@
 			        type: Object,
 			        value: null
 			    },
+			    users: {
+			    	type: Object
+			    }, 
+			    authData: {
+			    	type: Object
+			    }
 			},
 
 			login: function(){
@@ -82,7 +98,40 @@
 				  if (error) {
 					console.log("Login Failed!", error);
 				  } else {
-					console.log("Authenticated successfully with payload:", authData);
+					//console.log("Authenticated successfully with payload:", authData);
+				  }
+				});
+		    },
+
+		    userLoginProva: function(){
+		    		
+				var ref = new Firebase("https://popping-heat-2481.firebaseio.com");
+				ref.authWithOAuthPopup("google", function(error, authData) {
+				  if (error) {
+					console.log("Login Failed!", error);
+				  } else {
+					//console.log("Authenticated successfully with payload:", authData);
+				  }
+				}, {scope: "email"});
+
+
+				ref.onAuth(function(authData) {
+				  if (authData) {
+
+					var location = 'https://popping-heat-2481.firebaseio.com/Users/';
+					var users = new Firebase(location);
+
+					users.authWithPassword({
+					  email    : 'walter.miani@gmail.com',
+					  password : 'walter.miani@gmail.com'
+					});
+
+					console.log(authData);
+
+					//users.push({name: authData.google.displayName, uid: authData.google.id});
+
+				  } else {
+				    console.log("Client unauthenticated.")
 				  }
 				});
 		    }
