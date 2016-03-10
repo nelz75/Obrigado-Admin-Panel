@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../elements/languages/languages-manager.html">
 
 
 <dom-module id="firebase-login">
@@ -36,7 +37,10 @@
 		<paper-button on-tap="userLogin" raised>USER LOGIN</paper-button>
 		<paper-button on-tap="userLoginProva" raised>USER LOGIN PROVA</paper-button>
 		<paper-button on-tap="logout" raised>LOGOUT</paper-button>
+		<paper-button on-tap="getAuth" raised>GET AUTH</paper-button>
 
+
+		<languages-manager>LANGS</languages-manager>
 
 
 	</template>
@@ -94,7 +98,7 @@
 		    userLogin: function(){
 
 				var ref = new Firebase("https://popping-heat-2481.firebaseio.com");
-				ref.authWithOAuthRedirect("google", function(error, authData) {
+				ref.authWithOAuthPopup("google", function(error, authData) {
 				  if (error) {
 					console.log("Login Failed!", error);
 				  } else {
@@ -134,6 +138,13 @@
 				    console.log("Client unauthenticated.")
 				  }
 				});
+		    },
+
+		    getAuth: function(){
+					var location = 'https://popping-heat-2481.firebaseio.com/';
+					var ref = new Firebase(location);
+					var authData = ref.getAuth();
+					console.log(authData);
 		    }
 
 

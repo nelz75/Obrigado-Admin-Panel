@@ -53,12 +53,14 @@
 	  <paper-button on-tap="submitEditLanguage">Accept</paper-button>
 	</paper-dialog>
 
-       <template is="dom-repeat" items="[[languages]]" as="language">
-        		<div>[[language.name]] 
+       <template is="dom-repeat" items="{{languages}}" as="language">
+        		<div>{{language.name}} 
         			<paper-icon-button icon="editor:mode-edit" on-tap="editLanguage"></paper-icon-button>
         			<paper-button on-click="deleteData">X</paper-button>
         		</div>
         </template> 
+
+        <paper-button on-tap="logLanguages">Log Languages</paper-button>
 
 </template>
 
@@ -72,7 +74,8 @@
 		properties: {
 
 			languages: {
-				type: Object
+				type: Object, 
+				notify: true
 			}
 		}, 
 
@@ -126,6 +129,10 @@
 		deleteData: function(e){
 
 			this.$.ref.removeByKey(e.model.language.__firebaseKey__);
+		}, 
+
+		logLanguages: function(){
+			console.log(this.languages);
 		}
 	});
 
