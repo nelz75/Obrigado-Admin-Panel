@@ -79,6 +79,14 @@
 			}
 		}, 
 
+		listeners: {
+    	  'logged': 'handleLogged',
+ 	  	 },
+
+ 	  	 handleLogged: function(e){
+			console.info('handellato da altro elemento');
+ 	  	 },
+
 		editLanguage: function(e){
 
 			document.getElementById('editLanguageInput').value = e.model.language.name;
