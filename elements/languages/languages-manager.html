@@ -80,11 +80,19 @@
 		}, 
 
 		listeners: {
-    	  'logged': 'handleLogged',
+    	  "event-logged": "_handleLogged",
  	  	 },
 
- 	  	 handleLogged: function(e){
-			console.info('handellato da altro elemento');
+
+		ready: function() {
+		    document.addEventListener("event-logged", function(){
+		    	console.log('preso!');
+		    });
+		  },
+
+
+ 	  	 _handleLogged: function(e){
+			console.info(e.detail.message + ' da child');
  	  	 },
 
 		editLanguage: function(e){

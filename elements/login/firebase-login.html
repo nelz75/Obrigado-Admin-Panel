@@ -40,7 +40,7 @@
 		<paper-button on-tap="getAuth" raised>GET AUTH</paper-button>
 
 
-		<languages-manager>LANGS</languages-manager>
+		<languages-manager></languages-manager>
 
 
 	</template>
@@ -69,20 +69,10 @@
 			    }
 			},
 
-			  listeners: {
-        	  'logged': 'handleLogged',
-     	  	 },
-
-     	  	 handleLogged: function(e){
-				//console.info('handellato');
-     	  	 },
-
 			_statusChanged: function(){
-				console.log('xe cambiado l\'auth');
-				this.fire('logged');
-
-				//var event = new CustomEvent("logged", { "detail": "Example of an event" });
-				//document.dispatchEvent(event);
+				this.fire('event-logged', {
+		            message: 'hello'
+		          });
 
 			},
 
