@@ -79,6 +79,13 @@
 			}
 		}, 
 
+		ready: function(){
+
+			document.addEventListener('logged', function(){
+				console.info('handellato da altro elemento con listener');
+			})
+		},
+
 		listeners: {
     	  'logged': 'handleLogged',
  	  	 },
