@@ -59,9 +59,6 @@
         			<paper-button on-click="deleteData">X</paper-button>
         		</div>
         </template> 
-
-        <paper-button on-tap="logLanguages">Log Languages</paper-button>
-
 </template>
 
 <script>
@@ -77,23 +74,7 @@
 				type: Object, 
 				notify: true
 			}
-		}, 
-
-		listeners: {
-    	  "event-logged": "_handleLogged",
- 	  	 },
-
-
-		ready: function() {
-		    document.addEventListener("event-logged", function(){
-		    	console.log('preso!');
-		    });
-		  },
-
-
- 	  	 _handleLogged: function(e){
-			console.info(e.detail.message + ' da child');
- 	  	 },
+		},
 
 		editLanguage: function(e){
 
@@ -145,10 +126,6 @@
 		deleteData: function(e){
 
 			this.$.ref.removeByKey(e.model.language.__firebaseKey__);
-		}, 
-
-		logLanguages: function(){
-			console.log(this.languages);
 		}
 	});
 
