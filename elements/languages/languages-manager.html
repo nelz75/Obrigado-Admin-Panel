@@ -81,10 +81,24 @@
 
 		ready: function(){
 
-			document.addEventListener('logged', function(){
-				console.info('handellato da altro elemento con listener');
-			})
+			//document.addEventListener('logged', function(){
+			//console.info('handellato da altro elemento con listener');
+			//})
 		},
+
+		stimulate: function(){
+
+				this.notifyPath("languages", this.languages);
+				console.log(this.languages);
+
+				var connection = {"connessione": "oggi"} 
+
+				console.log(this.$.ref);
+
+				//this.languages.splice();
+		},
+
+
 
 		listeners: {
     	  'logged': 'handleLogged',

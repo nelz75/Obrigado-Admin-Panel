@@ -40,7 +40,7 @@
 		<paper-button on-tap="getAuth" raised>GET AUTH</paper-button>
 
 
-		<languages-manager>LANGS</languages-manager>
+		<languages-manager id="langs">LANGS</languages-manager>
 
 
 	</template>
@@ -53,11 +53,12 @@
 
 				statusKnown: {
        	 			type: Boolean,
-       	 			notify: true, 
-			    	observer: '_statusChanged'
+       	 			notify: true 
       			},
       			user: {
 			        type: Object,
+			        notify: true, 
+			    	observer: '_userChanged'
 			        
 			    },
 			    users: {
@@ -77,13 +78,19 @@
 				//console.info('handellato');
      	  	 },
 
-			_statusChanged: function(){
-				console.log('xe cambiado l\'auth');
-				this.fire('logged');
+			_userChanged: function(){
 
-				//var event = new CustomEvent("logged", { "detail": "Example of an event" });
-				//document.dispatchEvent(event);
+				if (this.statusKnown && this.user){
 
+					var ref = new Firebase("https://popping-heat-2481.firebaseio.com/Users");
+
+
+					var frasi = [{numero: 0}];
+
+					ref.child(ref.getAuth().uid.toString()).set(frasi);
+
+
+				}
 			},
 
 			login: function(){
