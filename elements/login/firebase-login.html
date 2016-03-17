@@ -35,14 +35,7 @@
 
 		<paper-button on-tap="login" raised>ADMIN LOGIN</paper-button>
 		<paper-button on-tap="userLogin" raised>USER LOGIN</paper-button>
-		<paper-button on-tap="userLoginProva" raised>USER LOGIN PROVA</paper-button>
 		<paper-button on-tap="logout" raised>LOGOUT</paper-button>
-		<paper-button on-tap="getAuth" raised>GET AUTH</paper-button>
-
-
-		<languages-manager id="langs">LANGS</languages-manager>
-
-
 	</template>
 
 	<script>
@@ -70,25 +63,17 @@
 			    }
 			},
 
-			  listeners: {
-        	  'logged': 'handleLogged',
-     	  	 },
-
-     	  	 handleLogged: function(e){
-				//console.info('handellato');
-     	  	 },
-
 			_userChanged: function(){
 
 				if (this.statusKnown && this.user){
 
 					var ref = new Firebase("https://popping-heat-2481.firebaseio.com/Users");
 
+					var frasi = [{numero: 0},{numero: 5}, {numero: 7}];
 
-					var frasi = [{numero: 0}];
+					var data = {frasi: frasi};
 
-					ref.child(ref.getAuth().uid.toString()).set(frasi);
-
+					ref.child(ref.getAuth().uid.toString()).set(data);
 
 				}
 			},
@@ -132,49 +117,7 @@
 					console.log("Authenticated successfully with payload:", authData.google.displayName);
 				  }
 				});
-		    },
-
-		    userLoginProva: function(){
-		    		
-				var ref = new Firebase("https://popping-heat-2481.firebaseio.com");
-				ref.authWithOAuthPopup("google", function(error, authData) {
-				  if (error) {
-					console.log("Login Failed!", error);
-				  } else {
-					//console.log("Authenticated successfully with payload:", authData);
-				  }
-				}, {scope: "email"});
-
-
-				ref.onAuth(function(authData) {
-				  if (authData) {
-
-					var location = 'https://popping-heat-2481.firebaseio.com/Users/';
-					var users = new Firebase(location);
-
-					users.authWithPassword({
-					  email    : 'walter.miani@gmail.com',
-					  password : 'walter.miani@gmail.com'
-					});
-
-					console.log(authData);
-
-					//users.push({name: authData.google.displayName, uid: authData.google.id});
-
-				  } else {
-				    console.log("Client unauthenticated.")
-				  }
-				});
-		    },
-
-		    getAuth: function(){
-					var location = 'https://popping-heat-2481.firebaseio.com/';
-					var ref = new Firebase(location);
-					var authData = ref.getAuth();
-					console.log(authData);
 		    }
-
-
 		});
 
 	</script>
