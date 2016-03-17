@@ -8,19 +8,14 @@
 
 	<template>
 
-		<user-manager id="userManager" authData="{{authData}}"></user-manager>
+		<user-manager id="userManager" location="{{location}}\Users" user-data="{{user}}"></user-manager>
 
 		<firebase-auth id="auth" provider="password"
-					location="https://popping-heat-2481.firebaseio.com/Languages/"
+					location="{{location}}"
 					status-known="{{statusKnown}}"
 					user="{{user}}"
 					on-error="loginError">
 		</firebase-auth>
-
-		<firebase-collection id="usersRef"
-                             location="https://popping-heat-2481.firebaseio.com/Users/"
-                             data = "{{users}}">
-    </firebase-collection>
 
 		<paper-button on-tap="userLogin">USER LOGIN</paper-button>
 	
@@ -29,23 +24,21 @@
 
         <h3>User ID:</h3>
    	    <pre>{{user.uid}}</pre>
-   	    <pre>{{authData.google.displayName}}</pre>
-   	    <img src="{{authData.google.profileImageURL}}"></img>
+   	    <pre>{{user.google.displayName}}</pre>
+   	    <!--<img src="{{user.google.profileImageURL}}"></img>-->
 
    	    <paper-input label="username" id="username"></paper-input>
 
    	    <paper-input label="password" type="password" id="password"></paper-input>
 
-
 		<paper-button on-tap="login" raised>ADMIN LOGIN</paper-button>
 		<paper-button on-tap="userLogin" raised>USER LOGIN</paper-button>
 		<paper-button on-tap="logout" raised>LOGOUT</paper-button>
 
-
 		<div>
 			<h3>AREA TEST USER MANAGER</h3>
 			<div id="displayName"></div>
-			<paper-button on-tap="displayName" raised>show display name</paper-button>
+			<paper-button on-tap="displayName" raised>{{name}}</paper-button>
 		</div>
 
 	</template>
@@ -66,27 +59,29 @@
 			    	observer: '_userChanged'
 			        
 			    },
-			    users: {
-			    	type: Object
-			    }, 
+			    location: {
+			    	type: String, 
+			    	value : "https://popping-heat-2481.firebaseio.com/"
+			    },
 			    authData: {
 			    	type: Object, 
 
+			    }, 
+			    name: {
+			    	type: String
 			    }
 			},
 
 			displayName: function(){
-				this.$.displayName.value = this.$.userManager.getDisplayName;
+
+				this.name = this.$.userManager.getDisplayName(); 
+				
 			},
 
 			_userChanged: function(){
 
 				if (this.statusKnown && this.user){
-
-					var ref = new Firebase("https://popping-heat-2481.firebaseio.com/Users");
-					var frasi = [{numero: 0},{numero: 5}, {numero: 7}];
-					var data = {frasi: frasi};
-					ref.child(ref.getAuth().uid.toString()).set(data);
+					this.$.userManager.setLogin(); 
 				}
 			},
 

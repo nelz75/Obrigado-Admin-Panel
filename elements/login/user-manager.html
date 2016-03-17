@@ -33,8 +33,13 @@
 			uid: {
 				type: String
 			},
-			authData: {
-				type: Object
+			userData: {
+				type: Object,
+				value: { displayName: "Anonymous"},
+				reflectToAttribute: true
+			},
+			location: {
+				type: String
 			}
 		},
 
@@ -52,7 +57,11 @@
 			console.log("removing Obrigado from sentence:" + firebaseKey);
 		},
 		getDisplayName: function(){
-			return this.authData.displayName;
+
+			console.log("retrieving display name");
+
+			console.log(this.userData);
+			return this.userData.google.displayName;
 		}
 	});
 
