@@ -42,6 +42,7 @@
 		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
 			<paper-item >
 				<span>{{sentence.italiano}}<span>
+				<paper-icon-button icon="thumb-up" on-tap="fireObrigado"></paper-icon-button>
 				<template is="dom-if" if="{{isAllSelected(chosenCategory)}}">
 					<span>({{sentence.category}})</span>
 				</template>
@@ -97,6 +98,11 @@ Polymer({
 
 		this.$.sentencesRef.add(data);
 	}, 
+
+	fireObrigado: function(e){
+
+		this.fire('obrigado', {data: e.model.sentence});
+	},
 
 	isCategorySelected: function(sentence, chosenCategory){
 

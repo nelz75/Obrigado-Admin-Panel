@@ -43,10 +43,41 @@
 			}
 		},
 
+		listeners:{
+			'obrigado' : 'handleObrigado'
+		},
+
+		ready: function(){
+			document.addEventListener('obrigado', function(e){
+				
+
+
+			var ref = new Firebase("https://popping-heat-2481.firebaseio.com/Users");
+			
+
+			var path = ref.getAuth().uid.toString() + '/frasi/';
+
+			console.log(path);
+
+			ref.child(path).push({firebaseKey: e.detail.data.__firebaseKey__});
+
+
+
+			});
+		},
+
+		prova: function(){
+			console.log('provaaaa');
+		},
+
+		handleObrigado: function(){
+			console.log('handellato');
+		},
+
 		setLogin: function(){
 			var ref = new Firebase("https://popping-heat-2481.firebaseio.com/Users");
 			var frasi = [{numero: 0},{numero: 5}, {numero: 7}];
-			var data = {frasi: frasi};
+			var data = {frasi: frasi, name: this.userData.google.displayName};
 			ref.child(ref.getAuth().uid.toString()).set(data);
 		},
 

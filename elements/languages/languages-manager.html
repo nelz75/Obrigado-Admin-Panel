@@ -56,6 +56,7 @@
        <template is="dom-repeat" items="{{languages}}" as="language">
         		<div>{{language.name}} 
         			<paper-icon-button icon="editor:mode-edit" on-tap="editLanguage"></paper-icon-button>
+        			<paper-icon-button icon="thumb-up" on-tap="fireObrigado"></paper-icon-button>
         			<paper-button on-click="deleteData">X</paper-button>
         		</div>
         </template> 
@@ -86,6 +87,13 @@
 			document.getElementById('editLanguageInputOldKey').value = e.model.language.__firebaseKey__;
 			this.$.editLanguageDialog.open();
 
+		},
+
+		fireObrigado: function(e){
+
+			console.log(e.model.language);
+
+			this.fire('obrigado', {data: e.model.language});
 		},
 
 		openDialog: function(){
