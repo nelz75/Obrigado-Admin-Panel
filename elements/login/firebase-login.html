@@ -1,11 +1,15 @@
 <link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../elements/languages/languages-manager.html">
+<link rel="import" href="user-manager.html">
 
 
 <dom-module id="firebase-login">
 
 	<template>
+
+		<user-manager id="userManager" authData="{{authData}}"></user-manager>
+
 		<firebase-auth id="auth" provider="password"
 					location="https://popping-heat-2481.firebaseio.com/Languages/"
 					status-known="{{statusKnown}}"
@@ -36,6 +40,14 @@
 		<paper-button on-tap="login" raised>ADMIN LOGIN</paper-button>
 		<paper-button on-tap="userLogin" raised>USER LOGIN</paper-button>
 		<paper-button on-tap="logout" raised>LOGOUT</paper-button>
+
+
+		<div>
+			<h3>AREA TEST USER MANAGER</h3>
+			<div id="displayName"></div>
+			<paper-button on-tap="displayName" raised>show display name</paper-button>
+		</div>
+
 	</template>
 
 	<script>
@@ -63,18 +75,18 @@
 			    }
 			},
 
+			displayName: function(){
+				this.$.displayName.value = this.$.userManager.getDisplayName;
+			},
+
 			_userChanged: function(){
 
 				if (this.statusKnown && this.user){
 
 					var ref = new Firebase("https://popping-heat-2481.firebaseio.com/Users");
-
 					var frasi = [{numero: 0},{numero: 5}, {numero: 7}];
-
 					var data = {frasi: frasi};
-
 					ref.child(ref.getAuth().uid.toString()).set(data);
-
 				}
 			},
 

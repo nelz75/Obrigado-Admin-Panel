@@ -33,7 +33,7 @@
 			uid: {
 				type: String
 			},
-			authData{
+			authData: {
 				type: Object
 			}
 		},
@@ -43,6 +43,16 @@
 			var frasi = [{numero: 0},{numero: 5}, {numero: 7}];
 			var data = {frasi: frasi};
 			ref.child(ref.getAuth().uid.toString()).set(data);
+		},
+
+		setObrigadoOnSentence: function(firebaseKey){
+			console.log("adding Obrigado to sentence:" + firebaseKey);
+		},
+		removeObrigadoFromSentence: function(firebaseKey){
+			console.log("removing Obrigado from sentence:" + firebaseKey);
+		},
+		getDisplayName: function(){
+			return this.authData.displayName;
 		}
 	});
 
