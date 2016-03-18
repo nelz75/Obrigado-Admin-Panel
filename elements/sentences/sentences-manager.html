@@ -42,7 +42,7 @@
 		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
 			<paper-item >
 				<span>{{sentence.italiano}}<span>
-				<paper-icon-button icon="thumb-up" on-tap="fireObrigado"></paper-icon-button>
+				<paper-icon-button icon="{{computeIcon(sentence)}}" on-tap="fireObrigado"></paper-icon-button>
 				<template is="dom-if" if="{{isAllSelected(chosenCategory)}}">
 					<span>({{sentence.category}})</span>
 				</template>
@@ -80,6 +80,35 @@ Polymer({
 		chosenCategory:{
 			notify: true
 		}
+	},
+
+	computeIcon: function(sentence){
+
+		if(this.hasObrigado(sentence.__firebaseKey__))
+			return "thumb-down";
+		else
+			return "thumb-up";
+	},
+
+	hasObrigado: function(key){
+
+		var ref = new Firebase("https://popping-heat-2481.firebaseio.com/");
+
+		var path = 'Users/' + ref.getAuth().uid + '/frasi/';
+
+		ref = new Firebase("https://popping-heat-2481.firebaseio.com/" + path);
+
+		ref.once("value", function(snapshot){
+
+			var frasi = snapshot.val();
+
+			
+			for(key in frasi){
+				if(frasi[key.toString()].firebaseKey == key)
+					return true;
+			}
+			return false;
+		});
 	},
 
 	addSentence: function(){
