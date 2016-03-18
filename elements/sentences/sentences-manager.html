@@ -101,7 +101,7 @@ Polymer({
 
 	fireObrigado: function(e){
 
-		this.fire('obrigado', {data: e.model.sentence});
+		this.fire('obrigado', {data: e.model.sentence, location: "https://popping-heat-2481.firebaseio.com/" });
 	},
 
 	isCategorySelected: function(sentence, chosenCategory){
