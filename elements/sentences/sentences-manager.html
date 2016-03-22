@@ -42,7 +42,7 @@
 		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
 			<paper-item >
 				<span>{{sentence.italiano}}<span>
-				<paper-icon-button icon="{{computeIcon(sentence)}}" on-tap="fireObrigado"></paper-icon-button>
+				<paper-icon-button icon="{{hasObrigado(sentence.__firebaseKey__)}}" on-tap="fireObrigado"></paper-icon-button>
 				<template is="dom-if" if="{{isAllSelected(chosenCategory)}}">
 					<span>({{sentence.category}})</span>
 				</template>
@@ -56,7 +56,11 @@
 
 <script>
 
+var retVal = "";
+
 Polymer({
+
+
 
 	is: 'sentences-manager',
 
@@ -82,17 +86,12 @@ Polymer({
 		}
 	},
 
-	computeIcon: function(sentence){
-
-		if(this.hasObrigado(sentence.__firebaseKey__))
-			return "thumb-down";
-		else
-			return "thumb-up";
-	},
-
 	hasObrigado: function(key){
 
+		// da sistemare, per ora se entro dentro il ciclo non disegna l'icon (forse problema di async)
+		
 		var ref = new Firebase("https://popping-heat-2481.firebaseio.com/");
+		retVal = "thumb-up";
 
 		var path = 'Users/' + ref.getAuth().uid + '/frasi/';
 
@@ -102,13 +101,17 @@ Polymer({
 
 			var frasi = snapshot.val();
 
-			
-			for(key in frasi){
-				if(frasi[key.toString()].firebaseKey == key)
-					return true;
+			for (item in frasi){
+
+				if(frasi[item]["firebaseKey"] == key){
+					retVal =  "thumb-down";
+				}
 			}
-			return false;
 		});
+
+		console.log(retVal);
+
+		return retVal;
 	},
 
 	addSentence: function(){
