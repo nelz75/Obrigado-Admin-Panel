@@ -1,0 +1,70 @@
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<dom-module is="obrigado-application">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<template>
+	<iron-pages id="ironprova" selected="0">
+		<div role="page" name="prima" index="1">prima</div>
+		<div role="page" name="seconda" index="2">seconda</div>
+		<div role="page" name="terza" index="3">terza</div>
+	</iron-pages>
+	<paper-button on-tap="changePage">CLICK</paper-button>
+	<paper-button on-tap="logPages">log pages</paper-button>
+</template>
+
+
+<script>
+
+Polymer({
+
+	is: "obrigado-application",
+
+	properties: {
+		pages: {
+			type: Object,
+			value: ""
+		}
+	},
+
+	attached: function(){
+		//console.log(document.querySelectorAll('[role="page"]'));
+		//this.pages = document.querySelectorAll('[role="page"]');
+
+		var pages = document.querySelectorAll('[role="page"]');
+
+		console.log(this.pages);
+
+		for(var i = 0; i< pages.length; i++){
+
+			console.log(this.pages);
+
+			var page = {index:pages[i].getAttribute("index"), name:pages[i].getAttribute("name")};
+
+			this.pages.push(page);
+		}  
+
+		console.log(this.pages);
+
+	},
+
+	changePage: function(){
+		var pages = document.querySelector('iron-pages[id="ironprova"]');
+		pages.selectNext();
+		console.log(this.$.ironprova.selectedItem);
+		console.log(this.$.ironprova.selected);
+		console.log(this.$.ironprova.selectedAttribute);
+	},
+
+	logPages: function(){
+
+		console.log(this.pages);
+
+	}
+});
+
+</script>
+
+
+</dom-module>
