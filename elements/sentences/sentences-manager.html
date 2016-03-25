@@ -6,17 +6,17 @@
 <template>
 
 	<firebase-collection id="categoryRef"
-                         location="https://popping-heat-2481.firebaseio.com/Categories/"
+                         location="[[location]]Categories/"
                          data = "{{categories}}">
     </firebase-collection>
 
     <firebase-collection id="sentencesRef"
-                         location="https://popping-heat-2481.firebaseio.com/Sentences/"
+                         location="[[location]]Sentences/"
                          data = "{{sentences}}">
     </firebase-collection>
 
     <firebase-collection id="languagesRef"
-                         location="https://popping-heat-2481.firebaseio.com/Languages/"
+                         location="[[location]]Languages/"
                          data = "{{languages}}">
     </firebase-collection>
 
@@ -36,8 +36,6 @@
 
 	<paper-button raised on-tap="addSentence">ADD SENTENCE</paper-button>
 
-	<div>SENTENCES LIST X CATEGORY SELECTED</div>
-
 	<template is="dom-repeat" items="{{sentences}}" as="sentence">
 		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
 			<paper-item >
@@ -49,6 +47,9 @@
 			</paper-item>
 		</template>
 	</template>
+
+
+	<!--<paper-button raised on-tap="logUserSentences">user sentences</paper-button> -->
 
 
 </template>
@@ -83,19 +84,34 @@ Polymer({
 
 		chosenCategory:{
 			notify: true
+		},
+
+		location: {
+			type: String
+		},
+
+		uid: {
+			type: String
+		}, 
+
+		userSentences: {
+			type: Object,
+			notify: true
 		}
 	},
 
-	hasObrigado: function(key){
+	logUserSentences: function(){
+		console.log(this.userSentences);
+	},
 
-		// da sistemare, per ora se entro dentro il ciclo non disegna l'icon (forse problema di async)
+	hasObrigado: function(key){
 		
-		var ref = new Firebase("https://popping-heat-2481.firebaseio.com/");
+		var ref = new Firebase(this.location);
 		retVal = "thumb-up";
 
-		var path = 'Users/' + ref.getAuth().uid + '/frasi/';
+		var path = 'Users/' + ref.getAuth().uid + '/sentences/';
 
-		ref = new Firebase("https://popping-heat-2481.firebaseio.com/" + path);
+		ref = new Firebase(this.location + path);
 
 		ref.once("value", function(snapshot){
 
@@ -133,7 +149,7 @@ Polymer({
 
 	fireObrigado: function(e){
 
-		this.fire('obrigado', {data: e.model.sentence, location: "https://popping-heat-2481.firebaseio.com/" });
+		this.fire('obrigado', {data: e.model.sentence, location: this.location });
 	},
 
 	isCategorySelected: function(sentence, chosenCategory){
@@ -147,7 +163,7 @@ Polymer({
 	}, 
 
 	isAllSelected: function(chosenCategory){
-		return chosenCategory =="tutte";
+		return chosenCategory == "tutte";
 	}
 
 });

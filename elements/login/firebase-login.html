@@ -51,14 +51,11 @@
 			    	observer: '_userChanged'
 			        
 			    },
-			    location: {
-			    	type: String, 
-			    	value : "https://popping-heat-2481.firebaseio.com/"
-			    },
-			    authData: {
-			    	type: Object, 
 
-			    }, 
+			    location: {
+			    	type: String
+			    },
+
 			    name: {
 			    	type: String
 			    }
@@ -70,10 +67,23 @@
 				
 			},
 
+			getAuthData: function(){
+
+				return this.user;
+			},
+
 			_userChanged: function(){
 
 				if (this.statusKnown && this.user){
-					this.$.userManager.setLogin(); 
+
+					if(this.user.provider == "google"){
+						this.$.userManager.setGoogleLogin(); 
+					}
+					else{
+						console.log("utente admin");
+						this.$.userManager.setAdminLogin(); 
+					}
+					
 				}
 			},
 

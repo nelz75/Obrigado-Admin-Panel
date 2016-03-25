@@ -9,15 +9,21 @@
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 
 
-<dom-module id="languages-manager">
+<dom-module is="user-manager">
 
 <template>
 
-<style is="custom-style">
+    <firebase-collection id="userSentencesRef"
+                         location="https://popping-heat-2481.firebaseio.com/Users/{{userData.uid}}/frasi"
+                         data = "{{userSentences}}">
+    </firebase-collection>  
 
+    <div>frasi utente!</div>
+    <template is="dom-repeat" items="{{userSentences}}">
+    		<div>{{item.firebaseKey}}</div>
+    </template>
 
-</style>
-
+    <paper-button on-tap="logSent" raised>user sentences</paper-button>
 	
 
 </template>
@@ -28,11 +34,8 @@
 
 		is: "user-manager", 
 
-
 		properties: {
-			uid: {
-				type: String
-			},
+		
 			userData: {
 				type: Object,
 				value: { displayName: "Anonymous"},
@@ -40,6 +43,10 @@
 			},
 			location: {
 				type: String
+			}, 
+
+			userSentences: {
+				type:Object
 			}
 		},
 
@@ -53,7 +60,7 @@
 
 			var ref = new Firebase(e.detail.location + 'Users/');
 			
-			var path = ref.getAuth().uid.toString() + '/frasi/';
+			var path = ref.getAuth().uid.toString() + '/sentences/';
 
 			console.log(path);
 
@@ -62,15 +69,27 @@
 			});
 		},
 
-		setLogin: function(){
+		logSent: function(){
+			console.log(this.userSentences);
+
+			console.log(this.$.userSentencesRef.location);
+
+			console.log(this.userData.uid);
+		},
+
+		getAuthData: function(){
+			return this.userData;
+		},
+
+		setGoogleLogin: function(){
 
 			console.log('inizializing user profile');
 
 			var ref = new Firebase(this.location + 'Users/');
 
 			// preparo un profilo iniziale con solo una frase fake
-			var frasi = [{vuoto: 0}];
-			var data = {name: this.userData.google.displayName, frasi: frasi};
+			var sentences = [{vuoto: 0}];
+			var data = {name: this.userData.google.displayName, sentences: sentences, role: "user"};
 			var uid = ref.getAuth().uid;
 
 			// se l'utente è già in db, non faccio niente
@@ -82,6 +101,31 @@
 				}
 				else{
 					console.log('user found!');
+				}
+			});
+				
+		},
+
+		setAdminLogin: function(){
+
+			console.log('inizializing admin user profile');
+
+			var ref = new Firebase(this.location + 'Users/');
+
+			// preparo un profilo iniziale con solo una frase fake
+			var sentences = [{vuoto: 0}];
+			var data = {name: this.userData.uid, sentences: sentences, role: "admin"};
+			var uid = ref.getAuth().uid;
+
+			// se l'utente è già in db, non faccio niente
+			ref.once("value", function(snapshot){
+				
+				if(!snapshot.child(uid).exists()){
+				console.log('admin not found, setting new profile');
+				ref.child(ref.getAuth().uid.toString()).set(data);
+				}
+				else{
+					console.log('admin found!');
 				}
 			});
 				
