@@ -1,17 +1,43 @@
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-
-<dom-module is="obrigado-application">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
+<dom-module is="obrigado-application">
 
 <template>
-	<iron-pages id="ironprova" selected="0">
-		<div role="page" name="prima" index="1">prima</div>
-		<div role="page" name="seconda" index="2">seconda</div>
-		<div role="page" name="terza" index="3">terza</div>
-	</iron-pages>
-	<paper-button on-tap="changePage">CLICK</paper-button>
-	<paper-button on-tap="logPages">log pages</paper-button>
+
+	<paper-drawer-panel id="paperDrawerPanel">
+		<paper-scroll-header-panel drawer fixed>
+
+			<paper-toolbar id="drawerToolbar">
+	          <span class="paper-font-title">Menu</span>
+	        </paper-toolbar>
+
+		<pages-menu id="ironmenu"></iron-pages-menu> 
+
+		</paper-scroll-header-panel>
+
+		 <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
+			<iron-pages id="ironpages" selected="0">
+					<div role="page" name="Login" order="1">
+						<firebase-login></firebase-login>
+					</div>
+					<div role="page" name="Languages" order="2">
+						<languages-manager></languages-manager>
+					</div>
+					<div role="page" name="Categories" order="3">
+						<categories-manager></categories-manager>
+					</div>
+					<div role="page" name="Sentences" order="4">
+						<sentences-manager></sentences-manager>
+					</div>
+				</iron-pages> 
+		 </paper-scroll-header-panel>
+
+
+
+	</paper-drawer-panel>
+
+
+
 </template>
 
 
@@ -19,49 +45,14 @@
 
 Polymer({
 
-	is: "obrigado-application",
+	is: "obrigado-application", 
 
-	properties: {
-		pages: {
-			type: Object,
-			value: ""
-		}
-	},
 
 	attached: function(){
-		//console.log(document.querySelectorAll('[role="page"]'));
-		//this.pages = document.querySelectorAll('[role="page"]');
 
-		var pages = document.querySelectorAll('[role="page"]');
-
-		console.log(this.pages);
-
-		for(var i = 0; i< pages.length; i++){
-
-			console.log(this.pages);
-
-			var page = {index:pages[i].getAttribute("index"), name:pages[i].getAttribute("name")};
-
-			this.pages.push(page);
-		}  
-
-		console.log(this.pages);
-
-	},
-
-	changePage: function(){
-		var pages = document.querySelector('iron-pages[id="ironprova"]');
-		pages.selectNext();
-		console.log(this.$.ironprova.selectedItem);
-		console.log(this.$.ironprova.selected);
-		console.log(this.$.ironprova.selectedAttribute);
-	},
-
-	logPages: function(){
-
-		console.log(this.pages);
-
+		this.$.ironmenu.registration();
 	}
+
 });
 
 </script>

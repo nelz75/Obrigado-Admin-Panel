@@ -16,8 +16,6 @@
 					user="{{user}}"
 					on-error="loginError">
 		</firebase-auth>
-
-		<paper-button on-tap="userLogin">USER LOGIN</paper-button>
 	
 		<h3>Login status:</h3>
         <p>{{computeLoginStatus(statusKnown, user)}}</p>
@@ -34,12 +32,6 @@
 		<paper-button on-tap="login" raised>ADMIN LOGIN</paper-button>
 		<paper-button on-tap="userLogin" raised>USER LOGIN</paper-button>
 		<paper-button on-tap="logout" raised>LOGOUT</paper-button>
-
-		<div>
-			<h3>AREA TEST USER MANAGER</h3>
-			<div id="displayName"></div>
-			<paper-button on-tap="displayName" raised>{{name}}</paper-button>
-		</div>
 
 	</template>
 
