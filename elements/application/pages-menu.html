@@ -4,9 +4,20 @@
 <dom-module is="pages-menu">
 
 <template>
-	<template is="dom-repeat" items="{{pages}}" as="page">
-		<paper-button on-tap="goToPage">[[page.name]]</paper-button>
-	</template>
+
+
+	<paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+		<template is="dom-repeat" items="{{pages}}" as="page">
+			<paper-item>
+				<iron-icon icon="[[page.icon]]"></iron-icon>
+				<paper-button on-tap="goToPage">[[page.name]]</paper-button>
+			</paper-item>
+			
+		</template>
+	</paper-menu>
+
+
+	
 </template>
 
 <script>
@@ -28,7 +39,7 @@ Polymer({
 
 	registration: function(){
 
-		console.log("creating menu");
+		console.log("...Creating menu...");
 
 		var docPages = document.querySelectorAll('[role="page"]');
 
@@ -37,7 +48,7 @@ Polymer({
 
 		for(var i = 0; i < docPages.length; i++){
 
-			var page = {order:order, name:docPages[i].getAttribute("name")};
+			var page = {order:order, name:docPages[i].getAttribute("name"), icon:docPages[i].getAttribute("icon")};
 			order += 1;
 			pages.push(page);
 		}  
@@ -46,7 +57,7 @@ Polymer({
 	},  
 
 	goToPage: function(e){
-		var pages = document.querySelector('iron-pages[id=' + this.pagesID + ']');
+		var pages = document.querySelector('[id=' + this.pagesID + ']');
 
 		pages.select(e.model.page.order - 1);
 	}
